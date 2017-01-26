@@ -60,19 +60,3 @@ A code coverage report will be available inside the `client/test/unit-results`.
 * **gulp test:unit** - For running unit tests one time then exit.
 * **gulp test:e2e** - Run end-to-end tests inside the `client/test/e2e` folder with `protractor`. If a test fails, you should find a screenshot of the page inside the `client/test/screenshots` folder.
 **Note that you need to have the application running in order to run e2e tests. You can launch this task from another terminal instance.**
-
-### Contributing
-
-PR and issues reporting are always welcome :)
-
-### License
-
-See LICENSE file
-
-### Changelog
-
-See CHANGELOG.md file
-
-### Thank you, community!
-
-All this wouldn't have been possible without these great [contributors](https://github.com/vesparny/angular-kickstart/graphs/contributors) and everybody who comes with new ideas and suggestions.
