@@ -36,7 +36,7 @@ catch(err) { module = angular.module("templates", []); }
 module.run(["$templateCache", function($templateCache) {
   "use strict";
   $templateCache.put("src/app/getting-started/getting-started.tpl.html",
-    "<div ng-controller=\"LineCtrl\">\n" +
+    "<div class=\"\" ng-controller=\"LineCtrl\">\n" +
     "	<div class=\"island3\">\n" +
     "		<h3>{{currentStock}}</h3>\n" +
     "	</div>\n" +
@@ -53,10 +53,15 @@ module.run(["$templateCache", function($templateCache) {
     "<hr>\n" +
     "<div class=\"pure-g\" ng-controller=\"ChatCtrl\">\n" +
     "	<div class=\"pure-u-2-3\">\n" +
-    "		<h2>Chat appears here</h2>\n" +
+    "		<h2>Chat History</h2>\n" +
+    "		<div ng-repeat=\"prevMsg in chatHistory\">\n" +
+    "			<p>{{prevMsg.date}}</p>\n" +
+    "			<p>{{prevMsg.content}}</p>\n" +
+    "		</div>\n" +
     "	</div>\n" +
-    "	<div class=\"pure-u-1-3\">\n" +
-    "		<input type=\"text\" placeholder=\"Type what you want to say here...\"/>\n" +
+    "	<div class=\"pure-u-1-3\" style=\"margin-top: 4vh;\">\n" +
+    "		<input type=\"text\" placeholder=\"Type msg here...\" ng-model=\"msg\"/>\n" +
+    "		<button ng-click=\"sendMsg();\">Send</button>\n" +
     "	</div>\n" +
     "</div>");
 }]);

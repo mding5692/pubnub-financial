@@ -28,6 +28,7 @@
     $log.debug('MainCtrl laoded!');
   }
 
+  // Angular Controller for manipulating stock graph, uses Angular-Charts
   function LineCtrl($scope, $http) {
     $scope.ticker = "";
     $scope.currentStock = "Stock name will show up here, search for stock to change";
@@ -79,12 +80,61 @@
       };
   }
 
-  function ChatCtrl($scope,$http) {
-    
-  }
+  // Angularjs Controller for Chat application using Pubnub Storage & Playback
+  function ChatCtrl($scope,$http, Pubnub) {
+    $scope.msg = '';
+    $scope.chatHistory = [];
+    $scope.channel = "stockChatChannel";
 
-  function run($log) {
-    $log.debug('App is running!');
+    Pubnub.init({
+      publish_key: 'pub-c-f5633e1b-f6e8-4364-9c90-a631f0778f73',
+      subscribe_key: 'sub-c-bcc893ca-e431-11e6-8919-0619f8945a4f',
+      ssl: true
+    });
+
+    Pubnub.history({
+      channel: $scope.channel,
+      callback: function(payload){ 
+        console.log("History successfully fetched");
+        var j = 0;
+          for (j = 0; j < payload[0].length; j++) {
+            $scope.chatHistory.push(payload[0][j]);
+          }
+          $scope.$apply();
+        },
+      count: 50, 
+      reverse: false
+    });
+
+    $scope.sendMsg = function() {
+      if (!$scope.msg) {
+        alert("Error: Can not send empty message");
+        return;
+      } 
+
+      Pubnub.publish({
+              channel: $scope.channel,
+              message: {
+                  content: $scope.msg,
+                  date: new Date()
+              },
+              callback: function(res) {
+                  console.log(res);
+              }
+          });
+          $scope.msg = '';
+    }
+
+    Pubnub.subscribe({
+      channel: $scope.channel,
+      triggerEvents: ['callback']
+    }); 
+
+    $scope.$on(Pubnub.getMessageEventNameFor($scope.channel), function (ngEvent, newMsg) {
+      $scope.$apply(function () {
+          $scope.chatHistory.push(newMsg)
+      }); 
+    });
   }
 
   angular.module('app', [
@@ -98,10 +148,10 @@
       'common.filters.uppercase',
       'common.interceptors.http',
       'templates',
-      'chart.js'
+      'chart.js',
+      'pubnub.angular.service'
     ])
     .config(config)
-    .run(run)
     .controller('MainCtrl', MainCtrl)
     .controller('LineCtrl', LineCtrl)
     .controller('ChatCtrl', ChatCtrl)
